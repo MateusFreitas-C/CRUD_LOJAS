@@ -1,11 +1,10 @@
 package com.example.desafio_rpe.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
 public abstract class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

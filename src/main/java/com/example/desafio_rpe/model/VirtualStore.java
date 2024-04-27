@@ -1,11 +1,13 @@
 package com.example.desafio_rpe.model;
 
 import com.example.desafio_rpe.dto.StoreDto;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
 @Entity
+@DiscriminatorValue("VIRTUAL")
 public class VirtualStore extends Store{
     private String url;
     @Min(0)

@@ -1,9 +1,11 @@
 package com.example.desafio_rpe.model;
 
 import com.example.desafio_rpe.dto.StoreDto;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
+@DiscriminatorValue("PHYSICAL")
 public class PhysicalStore extends Store{
     private String address;
     private Integer numberOfEmployees;
