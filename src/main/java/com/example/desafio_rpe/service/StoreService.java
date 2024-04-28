@@ -48,7 +48,7 @@ public class StoreService {
         return store;
     }
 
-    private Boolean existsByCnpj(String cnpj){
+    public Boolean existsByCnpj(String cnpj){
         return storeRepository.existsByCnpj(cnpj);
     }
 

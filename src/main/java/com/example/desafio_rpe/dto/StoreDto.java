@@ -9,7 +9,7 @@ public record StoreDto(
         String physicalAddress, // Apenas para LojaFisica
         int numberOfEmployees, // Apenas para LojaFisica
         String url, // Apenas para LojaVirtual
-        int rating // Apenas para LojaVirtual
+        Integer rating // Apenas para LojaVirtual
 ) {
 }
 
