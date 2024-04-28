@@ -32,7 +32,7 @@ public class StoreController {
             @ApiResponse(responseCode = "201", description = "Loja criada com sucesso"),
             @ApiResponse(responseCode = "409", description = "Já existe uma loja com o CNPJ informado")
     })
-    
+
     @PostMapping("/store")
     public ResponseEntity<Store> createStore(@RequestBody StoreDto newStore) {
         log.debug("Create Store executed");
@@ -48,6 +48,7 @@ public class StoreController {
 
     @GetMapping("/store")
     public ResponseEntity<List<Store>> getAll(){
+        log.debug("Get all stores executed");
         List<Store> response = storeService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -60,6 +61,7 @@ public class StoreController {
 
     @GetMapping("/store/{cnpj}")
     public ResponseEntity<Store> getOneByCnpj(@PathVariable String cnpj){
+        log.debug("Get one store by cnpj executed");
         Store response = storeService.getByCNPJ(cnpj);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
