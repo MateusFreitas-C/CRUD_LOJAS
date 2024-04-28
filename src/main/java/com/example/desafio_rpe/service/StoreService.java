@@ -2,6 +2,7 @@ package com.example.desafio_rpe.service;
 
 import com.example.desafio_rpe.dto.StoreDto;
 import com.example.desafio_rpe.exception.StoreAlreadyExistsException;
+import com.example.desafio_rpe.exception.StoreNotFoundException;
 import com.example.desafio_rpe.model.PhysicalStore;
 import com.example.desafio_rpe.model.Store;
 import com.example.desafio_rpe.model.StoreType;
@@ -54,5 +55,9 @@ public class StoreService {
 
     public List<Store> getAll(){
         return storeRepository.findAll();
+    }
+
+    public Store getByCNPJ(String cnpj){
+        return storeRepository.findByCnpj(cnpj).orElseThrow(() -> new StoreNotFoundException(cnpj));
     }
 }

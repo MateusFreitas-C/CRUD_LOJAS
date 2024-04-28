@@ -2,6 +2,7 @@ package com.example.desafio_rpe.service;
 
 import com.example.desafio_rpe.dto.StoreDto;
 import com.example.desafio_rpe.exception.StoreAlreadyExistsException;
+import com.example.desafio_rpe.exception.StoreNotFoundException;
 import com.example.desafio_rpe.model.PhysicalStore;
 import com.example.desafio_rpe.model.Store;
 import com.example.desafio_rpe.model.VirtualStore;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -118,4 +120,30 @@ class StoreServiceTest {
         // Verify
         verify(storeRepository).findAll();
     }
+
+    @Test
+    void getByCNPJ_ThrowsException() {
+        // Arrange
+        String cnpj = "123456789"; // CNPJ existente
+
+        // Act & Assert
+        assertThrows(StoreNotFoundException.class, () -> storeService.getByCNPJ(cnpj));
+
+        verify(storeRepository).findByCnpj(any());
+    }
+
+    @Test
+    void getByCNPJ_ReturnsStore() {
+        // Arrange
+        String cnpj = "123456789"; // CNPJ existente
+        Store expectedStore = new PhysicalStore("123456789", "Store Name", "Segment", "1234567890", "Address", 5);
+        when(storeRepository.findByCnpj(cnpj)).thenReturn(Optional.of(expectedStore));
+
+        // Act
+        Store actualStore = storeService.getByCNPJ(cnpj);
+
+        // Assert
+        assertEquals(expectedStore, actualStore);
+    }
+
 }

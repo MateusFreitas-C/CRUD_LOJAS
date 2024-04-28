@@ -29,8 +29,10 @@ public class StoreController {
 
     @Operation(summary = "Realiza o cadastro de lojas", method = "POST")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Loja criada com sucesso")
+            @ApiResponse(responseCode = "201", description = "Loja criada com sucesso"),
+            @ApiResponse(responseCode = "409", description = "Já existe uma loja com o CNPJ informado")
     })
+    
     @PostMapping("/store")
     public ResponseEntity<Store> createStore(@RequestBody StoreDto newStore) {
         log.debug("Create Store executed");
@@ -43,9 +45,22 @@ public class StoreController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista obtida com sucesso")
     })
+
     @GetMapping("/store")
     public ResponseEntity<List<Store>> getAll(){
         List<Store> response = storeService.getAll();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "Retorna a loja com o CNPJ informado", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Loja obtida com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não foi encontrada uma loja com o CNPJ informado")
+    })
+
+    @GetMapping("/store/{cnpj}")
+    public ResponseEntity<Store> getOneByCnpj(@PathVariable String cnpj){
+        Store response = storeService.getByCNPJ(cnpj);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
