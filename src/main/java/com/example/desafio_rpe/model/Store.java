@@ -1,6 +1,7 @@
 package com.example.desafio_rpe.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -9,6 +10,7 @@ public abstract class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "CNPJ may not be empty")
     private String cnpj;
     private String name;
     private String segment;

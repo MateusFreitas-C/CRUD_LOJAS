@@ -97,4 +97,8 @@ public class StoreService {
 
         return storeRepository.save(physicalStore);
     }
+
+    public void deleteStore(String cnpj){
+        storeRepository.delete(getByCNPJ(cnpj));
+    }
 }

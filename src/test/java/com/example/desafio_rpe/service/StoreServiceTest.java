@@ -185,7 +185,7 @@ class StoreServiceTest {
         assertEquals(dto.phone(), updatedStore.getPhone());
         assertEquals(dto.physicalAddress(), ((PhysicalStore) updatedStore).getAddress());
         assertEquals(dto.numberOfEmployees(), ((PhysicalStore) updatedStore).getNumberOfEmployees());
-        verify(storeRepository, times(1)).save(any(PhysicalStore.class));
+        verify(storeRepository).save(any(PhysicalStore.class));
     }
 
     @Test
@@ -207,7 +207,7 @@ class StoreServiceTest {
         assertEquals(dto.phone(), updatedStore.getPhone());
         assertEquals(dto.rating(), ((VirtualStore) updatedStore).getRating());
         assertEquals(dto.url(), ((VirtualStore) updatedStore).getUrl());
-        verify(storeRepository, times(1)).save(any(VirtualStore.class));
+        verify(storeRepository).save(any(VirtualStore.class));
     }
 
     @Test
@@ -229,7 +229,7 @@ class StoreServiceTest {
         assertEquals(dto.phone(), updatedStore.getPhone());
         assertEquals(dto.physicalAddress(), ((PhysicalStore) updatedStore).getAddress());
         assertEquals(dto.numberOfEmployees(), ((PhysicalStore) updatedStore).getNumberOfEmployees());
-        verify(storeRepository, times(1)).save(any(PhysicalStore.class));
+        verify(storeRepository).save(any(PhysicalStore.class));
     }
 
     @Test
@@ -241,5 +241,19 @@ class StoreServiceTest {
 
         // Act & Assert
         assertThrows(StoreNotFoundException.class, () -> storeService.updateStoreTypeAndDetails(dto, cnpj));
+    }
+
+    @Test
+    void deleteStore_CallsRepositoryDelete() {
+        // Arrange
+        String cnpj = "testCnpj";
+        Store store = new PhysicalStore();
+        when(storeRepository.findByCnpj(cnpj)).thenReturn(java.util.Optional.of(store));
+
+        // Act
+        storeService.deleteStore(cnpj);
+
+        // Assert
+        verify(storeRepository).delete(store);
     }
 }

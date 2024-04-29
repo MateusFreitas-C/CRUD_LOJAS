@@ -78,4 +78,17 @@ public class StoreController {
         log.info("Update store by cnpj executed successfully");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @Operation(summary = "Deleta a loja com o CNPJ informado", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Loja atualizada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não foi encontrada uma loja com o CNPJ informado")
+    })
+    @DeleteMapping("/store/{cnpj}")
+    public ResponseEntity<String> deleteStore(@PathVariable String cnpj){
+        log.info("Delete store by cnpj executed");
+        storeService.deleteStore(cnpj);
+        log.info("Delete store by cnpj executed successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Store deleted");
+    }
 }

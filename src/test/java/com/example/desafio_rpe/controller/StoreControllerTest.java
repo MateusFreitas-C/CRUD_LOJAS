@@ -5,15 +5,13 @@ import com.example.desafio_rpe.model.PhysicalStore;
 import com.example.desafio_rpe.model.Store;
 import com.example.desafio_rpe.service.StoreService;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StoreController.class)
 class StoreControllerTest {
@@ -44,7 +42,7 @@ class StoreControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"cnpj\":\"newCnpj\",\"name\":\"name\",\"segment\":\"segment\",\"phone\":\"phone\",\"storeType\":\"PHYSICAL\",\"address\":\"address\",\"numberOfEmployees\":10}")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -58,7 +56,7 @@ class StoreControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/store")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].name").exists());
     }
@@ -74,7 +72,7 @@ class StoreControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/store/{cnpj}", cnpj)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cnpj").value(cnpj))
                 .andExpect(jsonPath("$.name").value(expectedStore.getName()))
                 .andExpect(jsonPath("$.segment").value(expectedStore.getSegment()));
@@ -95,6 +93,18 @@ class StoreControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"cnpj\":\"" + cnpj + "\",\"name\":\"Physical Store\",\"segment\":\"Segment\",\"phone\":\"123456789\",\"storeType\":\"PHYSICAL\",\"address\":\"Address\",\"numberOfEmployees\":10}")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteStore_ReturnsNoContent() throws Exception {
+        // Arrange
+        String cnpj = "testCnpj";
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/store/" + cnpj)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Store deleted"));
     }
 }
