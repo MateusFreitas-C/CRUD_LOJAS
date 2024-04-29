@@ -35,7 +35,7 @@ public class StoreController {
 
     @PostMapping("/store")
     public ResponseEntity<Store> createStore(@RequestBody StoreDto newStore) {
-        log.debug("Create Store executed");
+        log.info("Create Store executed");
         Store response = storeService.createStore(newStore);
         log.info("Store saved successfully!");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -48,7 +48,7 @@ public class StoreController {
 
     @GetMapping("/store")
     public ResponseEntity<List<Store>> getAll(){
-        log.debug("Get all stores executed");
+        log.info("Get all stores executed");
         List<Store> response = storeService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -61,8 +61,21 @@ public class StoreController {
 
     @GetMapping("/store/{cnpj}")
     public ResponseEntity<Store> getOneByCnpj(@PathVariable String cnpj){
-        log.debug("Get one store by cnpj executed");
+        log.info("Get one store by cnpj executed");
         Store response = storeService.getByCNPJ(cnpj);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(summary = "Atualiza informações da loja com o CNPJ informado", method = "PUT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Loja atualizada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não foi encontrada uma loja com o CNPJ informado")
+    })
+    @PutMapping("/store/{cnpj}")
+    public ResponseEntity<Store> updateStore(@PathVariable String cnpj, @RequestBody StoreDto dto){
+        log.info("Update store by cnpj executed");
+        Store response = storeService.updateStoreTypeAndDetails(dto, cnpj);
+        log.info("Update store by cnpj executed successfully");
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

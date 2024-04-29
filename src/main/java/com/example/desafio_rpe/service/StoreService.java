@@ -21,7 +21,7 @@ public class StoreService {
     }
 
     public Store createStore(StoreDto newStore) {
-        if (existsByCnpj(newStore.cnpj())){
+        if (existsByCnpj(newStore.cnpj())) {
             throw new StoreAlreadyExistsException(newStore.cnpj());
         }
         StoreType type = StoreType.valueOf(newStore.storeType());
@@ -49,15 +49,52 @@ public class StoreService {
         return store;
     }
 
-    public Boolean existsByCnpj(String cnpj){
+    public Boolean existsByCnpj(String cnpj) {
         return storeRepository.existsByCnpj(cnpj);
     }
 
-    public List<Store> getAll(){
+    public List<Store> getAll() {
         return storeRepository.findAll();
     }
 
-    public Store getByCNPJ(String cnpj){
+    public Store getByCNPJ(String cnpj) {
         return storeRepository.findByCnpj(cnpj).orElseThrow(() -> new StoreNotFoundException(cnpj));
+    }
+
+    public Store updateStoreTypeAndDetails(StoreDto dto, String cnpj) {
+        Store actualStore = getByCNPJ(cnpj);
+        StoreType newType = StoreType.valueOf(dto.storeType());
+
+        switch (newType) {
+            case PHYSICAL -> {
+                return uptadePhysicalStore(actualStore, dto);
+            }
+            case VIRTUAL -> {
+                return updateVirtualStore(actualStore, dto);
+            }
+        }
+        return null;
+    }
+
+    Store updateVirtualStore(Store actualStore, StoreDto dto) {
+        VirtualStore virtualStore = (VirtualStore) actualStore;
+        virtualStore.setName(dto.name());
+        virtualStore.setSegment(dto.segment());
+        virtualStore.setPhone(dto.phone());
+        virtualStore.setRating(dto.rating());
+        virtualStore.setUrl(dto.url());
+
+        return storeRepository.save(virtualStore);
+    }
+
+    public Store uptadePhysicalStore(Store actualStore, StoreDto dto) {
+        PhysicalStore physicalStore = (PhysicalStore) actualStore;
+        physicalStore.setName(dto.name());
+        physicalStore.setSegment(dto.segment());
+        physicalStore.setPhone(dto.phone());
+        physicalStore.setAddress(dto.physicalAddress());
+        physicalStore.setNumberOfEmployees(dto.numberOfEmployees());
+
+        return storeRepository.save(physicalStore);
     }
 }

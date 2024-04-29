@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -59,5 +61,40 @@ class StoreControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].name").exists());
+    }
+
+    @Test
+    void getByCNPJ_ReturnsStore() throws Exception {
+        // Arrange
+        String cnpj = "123456789"; // CNPJ existente
+        Store expectedStore = new PhysicalStore(cnpj, "Store Name", "Segment", "1234567890", "Address", 5);
+        when(storeService.getByCNPJ(cnpj)).thenReturn(expectedStore);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/store/{cnpj}", cnpj)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(jsonPath("$.cnpj").value(cnpj))
+                .andExpect(jsonPath("$.name").value(expectedStore.getName()))
+                .andExpect(jsonPath("$.segment").value(expectedStore.getSegment()));
+    }
+
+    @Test
+    void updateStoreTypeAndDetails_ReturnsUpdatedStore() throws Exception {
+        // Arrange
+        String cnpj = "physicalCnpj";
+        PhysicalStore physicalStore = new PhysicalStore();
+        physicalStore.setCnpj(cnpj);
+        StoreDto dto = new StoreDto(cnpj, "Physical Store", "Segment", "123456789", "PHYSICAL", "Address", 10, null, null);
+        when(storeService.getByCNPJ(cnpj)).thenReturn(physicalStore);
+        when(storeService.uptadePhysicalStore(any(PhysicalStore.class), eq(dto))).thenReturn(physicalStore);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/store/" + cnpj)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"cnpj\":\"" + cnpj + "\",\"name\":\"Physical Store\",\"segment\":\"Segment\",\"phone\":\"123456789\",\"storeType\":\"PHYSICAL\",\"address\":\"Address\",\"numberOfEmployees\":10}")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

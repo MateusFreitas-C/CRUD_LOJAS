@@ -124,7 +124,7 @@ class StoreServiceTest {
     @Test
     void getByCNPJ_ThrowsException() {
         // Arrange
-        String cnpj = "123456789"; // CNPJ existente
+        String cnpj = "123456789"; // CNPJ inexistente
 
         // Act & Assert
         assertThrows(StoreNotFoundException.class, () -> storeService.getByCNPJ(cnpj));
@@ -146,4 +146,100 @@ class StoreServiceTest {
         assertEquals(expectedStore, actualStore);
     }
 
+    @Test
+    void updateVirtualStore_ReturnsUpdatedVirtualStore() {
+        // Arrange
+        String cnpj = "virtualCnpj";
+        VirtualStore virtualStore = new VirtualStore();
+        virtualStore.setCnpj(cnpj);
+        StoreDto dto = new StoreDto(cnpj, "Virtual Store", "Segment", "123456789", "VIRTUAL", null, null, "http://example.com", 5);
+        when(storeRepository.save(any(VirtualStore.class))).thenReturn(virtualStore);
+
+        // Act
+        Store updatedStore = storeService.updateVirtualStore(virtualStore, dto);
+
+        // Assert
+        assertEquals(dto.name(), updatedStore.getName());
+        assertEquals(dto.segment(), updatedStore.getSegment());
+        assertEquals(dto.phone(), updatedStore.getPhone());
+        assertEquals(dto.rating(), ((VirtualStore) updatedStore).getRating());
+        assertEquals(dto.url(), ((VirtualStore) updatedStore).getUrl());
+        verify(storeRepository).save(any(VirtualStore.class));
+    }
+
+    @Test
+    void uptadePhysicalStore_ReturnsUpdatedPhysicalStore() {
+        // Arrange
+        String cnpj = "physicalCnpj";
+        PhysicalStore physicalStore = new PhysicalStore();
+        physicalStore.setCnpj(cnpj);
+        StoreDto dto = new StoreDto(cnpj, "Physical Store", "Segment", "123456789", "PHYSICAL", "Address", 10, null, null);
+        when(storeRepository.save(any(PhysicalStore.class))).thenReturn(physicalStore);
+
+        // Act
+        Store updatedStore = storeService.uptadePhysicalStore(physicalStore, dto);
+
+        // Assert
+        assertEquals(dto.name(), updatedStore.getName());
+        assertEquals(dto.segment(), updatedStore.getSegment());
+        assertEquals(dto.phone(), updatedStore.getPhone());
+        assertEquals(dto.physicalAddress(), ((PhysicalStore) updatedStore).getAddress());
+        assertEquals(dto.numberOfEmployees(), ((PhysicalStore) updatedStore).getNumberOfEmployees());
+        verify(storeRepository, times(1)).save(any(PhysicalStore.class));
+    }
+
+    @Test
+    void updateStoreTypeAndDetails_VirtualStore_ReturnsUpdatedVirtualStore() {
+        // Arrange
+        String cnpj = "virtualCnpj";
+        VirtualStore virtualStore = new VirtualStore();
+        virtualStore.setCnpj(cnpj);
+        StoreDto dto = new StoreDto(cnpj, "Virtual Store", "Segment", "123456789", "VIRTUAL", null, null, "http://example.com", 5);
+        when(storeRepository.findByCnpj(cnpj)).thenReturn(Optional.of(virtualStore));
+        when(storeRepository.save(any(VirtualStore.class))).thenReturn(virtualStore);
+
+        // Act
+        Store updatedStore = storeService.updateStoreTypeAndDetails(dto, cnpj);
+
+        // Assert
+        assertEquals(dto.name(), updatedStore.getName());
+        assertEquals(dto.segment(), updatedStore.getSegment());
+        assertEquals(dto.phone(), updatedStore.getPhone());
+        assertEquals(dto.rating(), ((VirtualStore) updatedStore).getRating());
+        assertEquals(dto.url(), ((VirtualStore) updatedStore).getUrl());
+        verify(storeRepository, times(1)).save(any(VirtualStore.class));
+    }
+
+    @Test
+    void updateStoreTypeAndDetails_PhysicalStore_ReturnsUpdatedPhysicalStore() {
+        // Arrange
+        String cnpj = "physicalCnpj";
+        PhysicalStore physicalStore = new PhysicalStore();
+        physicalStore.setCnpj(cnpj);
+        StoreDto dto = new StoreDto(cnpj, "Physical Store", "Segment", "123456789", "PHYSICAL", "Address", 10, null, null);
+        when(storeRepository.findByCnpj(cnpj)).thenReturn(java.util.Optional.of(physicalStore));
+        when(storeRepository.save(any(PhysicalStore.class))).thenReturn(physicalStore);
+
+        // Act
+        Store updatedStore = storeService.updateStoreTypeAndDetails(dto, cnpj);
+
+        // Assert
+        assertEquals(dto.name(), updatedStore.getName());
+        assertEquals(dto.segment(), updatedStore.getSegment());
+        assertEquals(dto.phone(), updatedStore.getPhone());
+        assertEquals(dto.physicalAddress(), ((PhysicalStore) updatedStore).getAddress());
+        assertEquals(dto.numberOfEmployees(), ((PhysicalStore) updatedStore).getNumberOfEmployees());
+        verify(storeRepository, times(1)).save(any(PhysicalStore.class));
+    }
+
+    @Test
+    void updateStoreTypeAndDetails_StoreNotFound_ThrowsException() {
+        // Arrange
+        String cnpj = "nonexistentCnpj";
+        StoreDto dto = new StoreDto(cnpj, "Nonexistent Store", "Segment", "123456789", "PHYSICAL", "Address", 10, null, null);
+        when(storeRepository.findByCnpj(cnpj)).thenReturn(java.util.Optional.empty());
+
+        // Act & Assert
+        assertThrows(StoreNotFoundException.class, () -> storeService.updateStoreTypeAndDetails(dto, cnpj));
+    }
 }
