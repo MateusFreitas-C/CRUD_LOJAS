@@ -6,6 +6,7 @@ import com.example.desafio_rpe.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class StoreController {
 
     private final Logger log = LoggerFactory.getLogger(StoreController.class);
 
-    @Operation(summary = "Realiza o cadastro de lojas", method = "POST")
+    @Operation(summary = "Realiza o cadastro de lojas", method = "POST", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Loja criada com sucesso"),
             @ApiResponse(responseCode = "409", description = "Já existe uma loja com o CNPJ informado")
@@ -41,7 +42,7 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Operation(summary = "Retorna a lista de todas as lojas cadastradas", method = "GET")
+    @Operation(summary = "Retorna a lista de todas as lojas cadastradas", method = "GET", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista obtida com sucesso")
     })
@@ -53,7 +54,7 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "Retorna a loja com o CNPJ informado", method = "GET")
+    @Operation(summary = "Retorna a loja com o CNPJ informado", method = "GET", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Loja obtida com sucesso"),
             @ApiResponse(responseCode = "404", description = "Não foi encontrada uma loja com o CNPJ informado")
@@ -66,7 +67,7 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "Atualiza informações da loja com o CNPJ informado", method = "PUT")
+    @Operation(summary = "Atualiza informações da loja com o CNPJ informado", method = "PUT", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Loja atualizada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Não foi encontrada uma loja com o CNPJ informado")
@@ -79,7 +80,7 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Operation(summary = "Deleta a loja com o CNPJ informado", method = "DELETE")
+    @Operation(summary = "Deleta a loja com o CNPJ informado", method = "DELETE", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Loja atualizada com sucesso"),
             @ApiResponse(responseCode = "404", description = "Não foi encontrada uma loja com o CNPJ informado")
