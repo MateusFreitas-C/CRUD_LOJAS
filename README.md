@@ -55,6 +55,8 @@ A API oferece os seguintes endpoints relacionados à entidade `Store`:
 
 Esses endpoints são protegidos por autenticação JWT, o que significa que o usuário deve fornecer um token JWT válido para acessá-los.
 
+Obs: O campo storeType aceita apenas os valores 'VIRTUAL' e 'PHYSICAL'.
+
 ## Swagger
 
 A API é documentada usando o Swagger, que fornece uma interface interativa para explorar e testar os endpoints da API. Depois de iniciar o aplicativo localmente. 
