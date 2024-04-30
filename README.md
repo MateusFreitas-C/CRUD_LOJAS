@@ -10,6 +10,18 @@ Para executar o projeto localmente, você pode usar o Maven Wrapper fornecido co
 .\mvnw spring-boot:run
 ```
 
+Caso prefira é possível utilizar o Docker para rodar o projeto. Abrindo na raiz do projeto e executando os seguintes comando:
+
+```bash
+docker build -t nome_do_projeto
+```
+
+Em seguida:
+
+```bash
+docker-compose up
+```
+
 Isso iniciará a aplicação Spring Boot e você poderá acessá-la em http://localhost:8080.
 
 ## Decisões de Design
