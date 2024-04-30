@@ -8,10 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class StoreExceptionHandler {
@@ -42,6 +44,17 @@ public class StoreExceptionHandler {
         ErrorMessage response = new ErrorMessage(HttpStatus.BAD_REQUEST, errors.toString());
         log.error(e.getMessage());
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorMessage> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        List<String> errors = e.getBindingResult().getFieldErrors()
+                .stream()
+                .map(fieldError -> fieldError.getDefaultMessage())
+                .collect(Collectors.toList());
+
+        ErrorMessage response = new ErrorMessage(HttpStatus.BAD_REQUEST, errors.toString());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

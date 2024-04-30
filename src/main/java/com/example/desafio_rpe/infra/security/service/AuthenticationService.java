@@ -38,10 +38,10 @@ public class AuthenticationService {
     }
 
     public TokenResponseDao signin(SignInDto request) {
-        User user = (User) userService.userDetailsService().loadUserByUsername(request.email());
+        User user = (User) userService.userDetailsService().loadUserByUsername(request.getEmail());
 
-        if(passwordEncoder.matches(request.password(), user.getPassword())){
-            new UsernamePasswordAuthenticationToken(request.email(), request.password());
+        if(passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
         }else {
             throw new IllegalArgumentException("Invalid password");
         }

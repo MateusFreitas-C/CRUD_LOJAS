@@ -7,9 +7,11 @@ import com.example.desafio_rpe.service.StoreService;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -21,7 +23,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(StoreController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class StoreControllerTest {
 
     @Autowired
@@ -31,6 +34,7 @@ class StoreControllerTest {
     private StoreService storeService;
 
     @Test
+    @WithMockUser
     void createStore_ReturnsCreated() throws Exception {
         // Arrange
         StoreDto newStoreDto = new StoreDto("newCnpj", "name", "segment", "phone", "PHYSICAL", "address", 10, null, null);
@@ -46,6 +50,7 @@ class StoreControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getAll_ReturnsListOfStores() throws Exception {
         // Arrange
         List<Store> stores = new ArrayList<>();
@@ -62,6 +67,7 @@ class StoreControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getByCNPJ_ReturnsStore() throws Exception {
         // Arrange
         String cnpj = "123456789"; // CNPJ existente
@@ -79,6 +85,7 @@ class StoreControllerTest {
     }
 
     @Test
+    @WithMockUser
     void updateStoreTypeAndDetails_ReturnsUpdatedStore() throws Exception {
         // Arrange
         String cnpj = "physicalCnpj";
@@ -97,6 +104,7 @@ class StoreControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deleteStore_ReturnsNoContent() throws Exception {
         // Arrange
         String cnpj = "testCnpj";
