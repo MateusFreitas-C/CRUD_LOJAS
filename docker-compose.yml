@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/desafiorpe
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 123456789
+      TOKEN_SIGNING_KEY: 413F4428472B4B6250655368566D5970337336763979244226452948404D6351
+    volumes:
+      - ./target/desafio_rpe-0.0.1-SNAPSHOT.jar:/app/desafio_rpe.jar
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456789
+      MYSQL_DATABASE: desafiorpe
+    ports:
+      - "3306:3306"
